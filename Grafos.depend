@@ -1,0 +1,30 @@
+# depslib dependency file v1.0
+1724539813 source:c:\users\walac\onedrive\documentos\codeblocks\grafos\main.cpp
+	<iostream>
+	"Graph.hpp"
+	"Graph.cpp"
+
+1724533002 c:\users\walac\onedrive\documentos\codeblocks\grafos\graph.hpp
+	"Node.hpp"
+	"defines.hpp"
+
+1724529805 c:\users\walac\onedrive\documentos\codeblocks\grafos\node.hpp
+	"Edge.hpp"
+	"defines.hpp"
+
+1724529799 c:\users\walac\onedrive\documentos\codeblocks\grafos\edge.hpp
+	"defines.hpp"
+
+1724529796 c:\users\walac\onedrive\documentos\codeblocks\grafos\defines.hpp
+	<algorithm>
+	<cmath>
+	<fstream>
+	<iomanip>
+	<iostream>
+	<utility>
+	<vector>
+
+1724546384 c:\users\walac\onedrive\documentos\codeblocks\grafos\graph.cpp
+	"Graph.hpp"
+	<unordered_set>
+
