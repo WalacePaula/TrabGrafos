@@ -14,8 +14,8 @@ Graph::Graph(std::ifstream& instance)
     size_t node_id_1, node_id_2;
     float weight;
     while (instance >> node_id_1 >> node_id_2 >> weight) {
-        add_node(node_id_1); // Adiciona o nó de origem, se não existir
-        add_node(node_id_2); // Adiciona o nó de destino, se não existir
+        add_node(node_id_1);
+        add_node(node_id_2);
         add_edge(node_id_1, node_id_2, weight); // Adiciona a aresta
     }
 }
@@ -30,6 +30,9 @@ Graph::~Graph()
 
 void Graph::remove_node(size_t node_id)
 {
+    // Verifica se o grafo está vazio
+    if (_first == nullptr) return;
+
     Node* current = _first;
     Node* previous = nullptr;
 
@@ -41,14 +44,21 @@ void Graph::remove_node(size_t node_id)
 
     if (current == nullptr) return; // Nó não encontrado
 
-    // Remove todas as arestas conectadas ao nó
+    // Percorre todos os nós para remover as arestas que têm como alvo o nó a ser removido
+    Node* node_to_check = _first;
+    while (node_to_check != nullptr) {
+        remove_edge(node_to_check->_id, node_id);
+        node_to_check = node_to_check->_next_node;
+    }
+
+    // Remove todas as arestas conectadas ao nó a ser removido
     while (current->_first_edge != nullptr) {
         Edge* temp = current->_first_edge;
         current->_first_edge = current->_first_edge->_next_edge;
         delete temp;
     }
 
-    // Ajusta os ponteiros do nó anterior e do próximo nó
+    // Ajusta os ponteiros para remover o nó da lista
     if (previous != nullptr) {
         previous->_next_node = current->_next_node;
     } else {
@@ -103,10 +113,63 @@ void Graph::remove_edge(size_t node_id_1, size_t node_id_2)
 
     // Libera a memória da aresta removida
     delete current_edge;
+
+    // Se o grafo não for direcionado, remove a aresta oposta
+    if (!_directed) {
+        Node* node_2 = _first;
+
+        // Encontra o nó de destino
+        while (node_2 != nullptr && node_2->_id != node_id_2) {
+            node_2 = node_2->_next_node;
+        }
+
+        if (node_2 == nullptr) return; // Nó de destino não encontrado
+
+        Edge* current_edge_opposite = node_2->_first_edge;
+        Edge* previous_edge_opposite = nullptr;
+
+        // Encontra a aresta oposta a ser removida
+        while (current_edge_opposite != nullptr && current_edge_opposite->_target_id != node_id_1) {
+            previous_edge_opposite = current_edge_opposite;
+            current_edge_opposite = current_edge_opposite->_next_edge;
+        }
+
+        if (current_edge_opposite == nullptr) return; // Aresta oposta não encontrada
+
+        // Remove a aresta oposta
+        if (previous_edge_opposite != nullptr) {
+            previous_edge_opposite->_next_edge = current_edge_opposite->_next_edge;
+        } else {
+            node_2->_first_edge = current_edge_opposite->_next_edge; // Caso seja a primeira aresta
+        }
+
+        // Diminui o número de arestas do nó de destino
+        node_2->_number_of_edges--;
+
+        // Libera a memória da aresta oposta removida
+        delete current_edge_opposite;
+    }
+}
+
+Node* Graph::find_node(size_t node_id)
+{
+    Node* current = _first;
+    while (current != nullptr) {
+        if (current->_id == node_id) {
+            return current; // Nó encontrado
+        }
+        current = current->_next_node;
+    }
+    return nullptr; // Nó não encontrado
 }
 
 void Graph::add_node(size_t node_id, float weight)
 {
+
+    // Verifica se o nó já existe
+    if (find_node(node_id) != nullptr) {
+        return; // Nó já existe, não faz nada
+    }
     Node* new_node = new Node;
     new_node->_id = node_id;
     new_node->_weight = weight;
@@ -173,24 +236,27 @@ void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
     }
 }
 
+void print_graph(std::ofstream &output_file)
+{}
+
+void Graph::imprime_sequencia_nos()
+{   Node* no_atual = _first;
+    while(no_atual != nullptr){
+        std::cout << no_atual->_id << " --> " << std::ends;
+        no_atual = no_atual->_next_node;
+    }
+    std::cout << "null" << std::endl;
+}
+
 
 void Graph::print_graph()
 {
-    std::unordered_set<size_t> printed_nodes;
-
     for (Node* current_node = _first; current_node != nullptr; current_node = current_node->_next_node) {
-        if (printed_nodes.find(current_node->_id) != printed_nodes.end()) continue;
-
-        printed_nodes.insert(current_node->_id);
 
         std::cout << "Node " << current_node->_id << " (" << current_node->_weight << "): ";
 
-        std::unordered_set<size_t> printed_edges;
         for (Edge* current_edge = current_node->_first_edge; current_edge != nullptr; current_edge = current_edge->_next_edge) {
-            if (printed_edges.find(current_edge->_target_id) != printed_edges.end()) continue;
-
             std::cout << " -> " << current_edge->_target_id << " (" << current_edge->_weight << ")";
-            printed_edges.insert(current_edge->_target_id);
         }
 
         std::cout << std::endl;

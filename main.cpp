@@ -7,24 +7,34 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
 
-     std::ifstream instance_file("C:/Users/walac/OneDrive/Documentos/codeblocks/Grafos/instances/instance1.txt");
+     std::ifstream instance_file("instances/instance1.txt");
 
-    // Verifique se o arquivo foi aberto corretamente
     if (!instance_file.is_open()) {
         std::cerr << "Erro ao abrir o arquivo de instância!" << std::endl;
         return 1;
     }
     Graph graph(instance_file);
-    // Crie o grafo a partir do arquivo de instância
+    instance_file.close();
     graph.print_graph();
 
-    // Feche o arquivo de instância
-    instance_file.close();
+    cout << "Imprimindo sequencia de nós " << endl;
+    graph.imprime_sequencia_nos();
 
-    // Agora você pode trabalhar com o grafo 'g'
+    graph.remove_node(3);
+    cout << "Removendo nó 3" << endl;
+    graph.print_graph();
 
-    // Aqui você pode realizar operações com o grafo
-    //graph.print_graph();
+    cout << "Imprimindo sequencia de nós " << endl;
+    graph.imprime_sequencia_nos();
+
+    cout << "Removendo nó 2" << endl;
+    graph.remove_node(2);
+    graph.print_graph();
+
+    cout << "Imprimindo sequencia de nós " << endl;
+    graph.imprime_sequencia_nos();
+
+
 
     return 0;
 }
