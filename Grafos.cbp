@@ -41,6 +41,19 @@
 		<Unit filename="Node.hpp" />
 		<Unit filename="defines.hpp" />
 		<Unit filename="instances/instance1.txt" />
+		<Unit filename="instances/instance10.txt" />
+		<Unit filename="instances/instance11.txt" />
+		<Unit filename="instances/instance12.txt" />
+		<Unit filename="instances/instance13.txt" />
+		<Unit filename="instances/instance14.txt" />
+		<Unit filename="instances/instance2.txt" />
+		<Unit filename="instances/instance3.txt" />
+		<Unit filename="instances/instance4.txt" />
+		<Unit filename="instances/instance5.txt" />
+		<Unit filename="instances/instance6.txt" />
+		<Unit filename="instances/instance7.txt" />
+		<Unit filename="instances/instance8.txt" />
+		<Unit filename="instances/instance9.txt" />
 		<Unit filename="main.cpp" />
 		<Extensions />
 	</Project>

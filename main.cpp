@@ -1,37 +1,170 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 #include "Graph.hpp"
-#include "Graph.cpp"
-
 
 using namespace std;
 
+bool to_bool(const string& str) {
+    return str == "true" || str == "1";
+}
+
 int main(int argc, char* argv[]) {
+    if (argc == 6) {
+        std::ifstream instance_file(argv[1]);
+
+        if (!instance_file.is_open()) {
+            std::cerr << "Erro ao abrir o arquivo de instancia!" << std::endl;
+            return 1;
+        }
+
+        bool directed = to_bool(argv[3]);
+        bool weighted_edges = to_bool(argv[4]);
+        bool weighted_nodes = to_bool(argv[5]);
+
+        Graph* graph = new Graph(instance_file, directed, weighted_edges, weighted_nodes);
+        instance_file.close();
+
+        graph->print_graph();
+
+        std::cout << "Imprimindo sequencia de nos " << std::endl;
+        graph->imprime_sequencia_nos();
+
+        graph->remove_node(3);
+        std::cout << "Removendo no 3" << std::endl;
+        graph->print_graph();
+
+        std::cout << "Imprimindo sequencia de nos " << std::endl;
+        graph->imprime_sequencia_nos();
+
+        std::cout << "Removendo no 2" << std::endl;
+        graph->remove_node(2);
+        graph->print_graph();
+
+        std::cout << "Imprimindo sequencia de nos " << std::endl;
+        graph->imprime_sequencia_nos();
+
+        delete graph;  // N√£o se esque√ßa de deletar o ponteiro para evitar vazamento de mem√≥ria
+
+        return 0;
+    } else {
+        std::cout << "ERRO: Espera-se: ./<arquivo_entrada> <arquivo_saida> <Op_Direc> <Op_PesoAresta> <Op_PesoNos>" << std::endl;
+        return 1;
+    }
+}
+
+    /*Graph *readFileFirstPart(ifstream &input_file, int directed, int weightedEdge, int weightedNode, bool isPERT)
+{
+    // Preenchimento das vari√°veis globais
+    ::directed = directed;
+    ::weightedEdge = weightedEdge;
+    ::weightedNode = weightedNode;
+
+    // Vari√°veis para auxiliar na cria√ß√£o dos n√≥s no Grafo
+    int labelNodeSource;
+    int labelNodeTarget;
+    int order;
+
+    // Obt√©m a ordem do grafo
+    input_file >> order;
+
+    // Cria objeto grafo
+    Graph *graph = new Graph(order, directed, weightedEdge, weightedNode);
+
+    // Leitura de arquivo
+    //
+    // Grafo SEM peso nos n√≥s, e SEM peso nas arestas
+    if (!graph->getWeightedEdge() && !graph->getWeightedNode())
+    {
+        while (input_file >> labelNodeSource >> labelNodeTarget)
+        {
+            Node *sourceNode = nullptr;
+            Node *targetNode = nullptr;
+            graph->insertEdge(abs(labelNodeSource), abs(labelNodeTarget), 1, &sourceNode, &targetNode, isPERT);
+        }
+    }
+    // Grafo SEM peso nos n√≥s, mas COM peso nas arestas
+    else if (graph->getWeightedEdge() && !graph->getWeightedNode())
+    {
+        float edgeWeight;
+
+        while (input_file >> labelNodeSource >> labelNodeTarget >> edgeWeight)
+        {
+            Node *sourceNode = nullptr;
+            Node *targetNode = nullptr;
+            graph->insertEdge(abs(labelNodeSource), abs(labelNodeTarget), edgeWeight, &sourceNode, &targetNode, isPERT);
+        }
+    }
+    // Grafo COM peso nos n√≥s, mas SEM peso nas arestas
+    else if (graph->getWeightedNode() && !graph->getWeightedEdge())
+    {
+        float nodeSourceWeight, nodeTargetWeight;
+
+        while (input_file >> labelNodeSource >> nodeSourceWeight >> labelNodeTarget >> nodeTargetWeight)
+        {
+            Node *sourceNode = nullptr;
+            Node *targetNode = nullptr;
+            graph->insertEdge(abs(labelNodeSource), abs(labelNodeTarget), 1, &sourceNode, &targetNode, isPERT);
+            if (sourceNode != nullptr)
+                sourceNode->setWeight(nodeSourceWeight);
+            if (targetNode != nullptr)
+                targetNode->setWeight(nodeTargetWeight);
+        }
+    }
+    // Grafo COM peso nos n√≥s, e COM peso nas arestas
+    else if (graph->getWeightedNode() && graph->getWeightedEdge())
+    {
+        float nodeSourceWeight, nodeTargetWeight, edgeWeight;
+
+        while (input_file >> labelNodeSource >> nodeSourceWeight >> labelNodeTarget >> nodeTargetWeight >> edgeWeight)
+        {
+            Node *sourceNode = nullptr;
+            Node *targetNode = nullptr;
+            graph->insertEdge(abs(labelNodeSource), abs(labelNodeTarget), edgeWeight, &sourceNode, &targetNode, isPERT);
+            if (sourceNode != nullptr)
+                sourceNode->setWeight(nodeSourceWeight);
+            if (targetNode != nullptr)
+                targetNode->setWeight(nodeTargetWeight);
+        }
+    }
+
+    int i = -1;
+    while (order > graph->getNodeIdCounter())
+    {
+        graph->insertNode(i);
+        i--;
+    }
+
+    return graph;
+}
+
+
 
      std::ifstream instance_file("instances/instance1.txt");
 
     if (!instance_file.is_open()) {
-        std::cerr << "Erro ao abrir o arquivo de inst‚ncia!" << std::endl;
+        std::cerr << "Erro ao abrir o arquivo de inst√¢ncia!" << std::endl;
         return 1;
     }
     Graph graph(instance_file);
     instance_file.close();
     graph.print_graph();
 
-    cout << "Imprimindo sequencia de nÛs " << endl;
+    cout << "Imprimindo sequencia de n√≥s " << endl;
     graph.imprime_sequencia_nos();
 
     graph.remove_node(3);
-    cout << "Removendo nÛ 3" << endl;
+    cout << "Removendo n√≥ 3" << endl;
     graph.print_graph();
 
-    cout << "Imprimindo sequencia de nÛs " << endl;
+    cout << "Imprimindo sequencia de n√≥s " << endl;
     graph.imprime_sequencia_nos();
 
-    cout << "Removendo nÛ 2" << endl;
+    cout << "Removendo n√≥ 2" << endl;
     graph.remove_node(2);
     graph.print_graph();
 
-    cout << "Imprimindo sequencia de nÛs " << endl;
+    cout << "Imprimindo sequencia de n√≥s " << endl;
     graph.imprime_sequencia_nos();
 
 
@@ -41,10 +174,10 @@ int main(int argc, char* argv[]) {
 
 /****************
  * Funcao    : int main(int argc, char const *argv[])                                                                                                       *
- * Descricao : FunÁ„o principal, interpreta o tipo de execuÁ„o pelos argumentos passados, abre arquivo de entrada de dados e define semente de randomizaÁ„o *
+ * Descricao : Fun√ß√£o principal, interpreta o tipo de execu√ß√£o pelos argumentos passados, abre arquivo de entrada de dados e define semente de randomiza√ß√£o *
  * Parametros: argc - quantidade de argumentos passados na linha de comando                                                                                 *
  *             argv - vetor dos argumentos passados pela linha de comando                                                                                   *
- * Retorno   : inteiro que define se houve erro, ou n„o, na execuÁ„o do programa.                                                                           *
+ * Retorno   : inteiro que define se houve erro, ou n√£o, na execu√ß√£o do programa.                                                                           *
  ***************
 int main(int argc, char const *argv[])
 {
@@ -59,7 +192,7 @@ int main(int argc, char const *argv[])
         ::input_file_name = argv[1];
         string output_file_name(argv[2]);
 
-        // Abre arquivos de entrada e saÌda
+        // Abre arquivos de entrada e sa√≠da
         ifstream input_file;
         ofstream output_file;
         input_file.open(input_file_name, ios::in);
@@ -68,7 +201,7 @@ int main(int argc, char const *argv[])
 
         if (input_file.is_open())
         {
-            // Executa vers„o adequada do programa
+            // Executa vers√£o adequada do programa
             if (argc == 6 && atoi(argv[3]) != 2)
             {
                 graph = readFileFirstPart(input_file, atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), false);
@@ -127,13 +260,13 @@ int main(int argc, char const *argv[])
         }
         else
         {
-            cout << "ERRO: N„o foi possÌvel abrir o arquivo de entrada " << input_file_name << "!" << endl;
+            cout << "ERRO: N√£o foi poss√≠vel abrir o arquivo de entrada " << input_file_name << "!" << endl;
             return 1;
         }
 
         // Fecha arquivo de entrada
         input_file.close();
-        // Fecha arquivo de saÌda
+        // Fecha arquivo de sa√≠da
         output_file.close();
 
         return endingCode;

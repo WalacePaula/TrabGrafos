@@ -9,7 +9,7 @@ class Graph
 public:
     /*Assinatura dos métodos básicos para o funcionamento da classe*/
 
-    Graph(std::ifstream& instance);
+    Graph(std::ifstream& instance, bool directed, bool weighted_edges, bool weighted_nodes);
     Graph();
     ~Graph();
 

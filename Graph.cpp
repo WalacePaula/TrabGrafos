@@ -1,10 +1,8 @@
 #include "Graph.hpp"
-#include <unordered_set>
 
-
-Graph::Graph(std::ifstream& instance)
-    : _number_of_nodes(0), _number_of_edges(0), _directed(false),
-      _weighted_edges(false), _weighted_nodes(false), _first(nullptr), _last(nullptr)
+Graph::Graph(std::ifstream& instance, bool directed, bool weighted_edges, bool weighted_nodes)
+    : _number_of_nodes(0), _number_of_edges(0), _directed(directed),
+      _weighted_edges(weighted_edges), _weighted_nodes(weighted_nodes), _first(nullptr), _last(nullptr)
 {
     // Lê o número de nós
     size_t num_nodes;
@@ -13,15 +11,18 @@ Graph::Graph(std::ifstream& instance)
     // Lê as arestas entre os nós
     size_t node_id_1, node_id_2;
     float weight;
+
+    for (size_t i = 1; i <= num_nodes; i++) {
+        add_node(i, weight); // Adiciona o nó
+    }
     while (instance >> node_id_1 >> node_id_2 >> weight) {
-        add_node(node_id_1);
-        add_node(node_id_2);
         add_edge(node_id_1, node_id_2, weight); // Adiciona a aresta
     }
 }
 
 Graph::Graph()
-{
+    : _number_of_nodes(0), _number_of_edges(0), _directed(false),
+    _weighted_edges(false), _weighted_nodes(false), _first(nullptr), _last(nullptr){
 }
 
 Graph::~Graph()
@@ -165,11 +166,15 @@ Node* Graph::find_node(size_t node_id)
 
 void Graph::add_node(size_t node_id, float weight)
 {
-
     // Verifica se o nó já existe
     if (find_node(node_id) != nullptr) {
         return; // Nó já existe, não faz nada
     }
+
+    if(!_weighted_nodes){
+        weight = 0;
+    }
+
     Node* new_node = new Node;
     new_node->_id = node_id;
     new_node->_weight = weight;
