@@ -1,12 +1,13 @@
 #ifndef DEFINES_HPP
 #define DEFINES_HPP
 
-#include <algorithm> /* implementações de algoritmos de ordenação, soma acumulada, reversão de vetores e máximo e mínimos de containers */
-#include <cmath> /* implementações de algoritmos matemáticos e estatísticos */
-#include <fstream> /* manipulação de arquivos */
-#include <iomanip> /* manipulação de saída e entrada de dados */
-#include <iostream> /* implementações básicas da linguagem */
-#include <utility> /* implementações de alguns containers e operações de swap */
-#include <vector> /* implementação do container vector e suas operações */
+#include <algorithm> /* implementaï¿½ï¿½es de algoritmos de ordenaï¿½ï¿½o, soma acumulada, reversï¿½o de vetores e mï¿½ximo e mï¿½nimos de containers */
+#include <cmath> /* implementaï¿½ï¿½es de algoritmos matemï¿½ticos e estatï¿½sticos */
+#include <fstream> /* manipulaï¿½ï¿½o de arquivos */
+#include <iomanip> /* manipulaï¿½ï¿½o de saï¿½da e entrada de dados */
+#include <iostream> /* implementaï¿½ï¿½es bï¿½sicas da linguagem */
+#include <utility> /* implementaï¿½ï¿½es de alguns containers e operaï¿½ï¿½es de swap */
+#include <vector> /* implementaï¿½ï¿½o do container vector e suas operaï¿½ï¿½es */
+#include <queue>
 
 #endif  //DEFINES_HPP

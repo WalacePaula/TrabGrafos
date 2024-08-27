@@ -4,10 +4,12 @@
 #include "Node.hpp"
 #include "defines.hpp"
 
+using namespace std;
+
 class Graph
 {
 public:
-    /*Assinatura dos métodos básicos para o funcionamento da classe*/
+    /*Assinatura dos mï¿½todos bï¿½sicos para o funcionamento da classe*/
 
     Graph(std::ifstream& instance, bool directed, bool weighted_edges, bool weighted_nodes);
     Graph();
@@ -23,6 +25,14 @@ public:
     int conected(size_t node_id_1, size_t node_id_2);
     void imprime_sequencia_nos();
     Node* find_node(size_t node_id);
+    bool ehConexo(vector<size_t>& vertices);
+    Graph* arvoreGeradoraMinKruskal(vector<size_t>& vertices);
+    Graph* arvoreGeradoraMinPrim(vector<size_t>& vertices);
+    vector<size_t> get_fechoTransitivoDireto(size_t vertice_inicio);
+    vector<size_t> get_fechoTransitivoIndireto(size_t vertice_inicio);
+    void print_arvoreGeradoraMinima(Graph *mst);
+    void buscaProfundidade(size_t vertice, vector<size_t>& resultado, vector<bool>& visitado);
+    void buscaProfundidadeInvertida(size_t vertice, vector<size_t>& resultado, vector<bool>& visitado);
 
 private:
     size_t _number_of_nodes;
@@ -32,6 +42,8 @@ private:
     bool   _weighted_nodes;
     Node  *_first;
     Node  *_last;
+    size_t encontrar_pai(size_t v, vector<size_t>& pai);
+    void unir_conjuntos(size_t a, size_t b, vector<size_t>& pai, vector<size_t>& rank);
 };
 
 #endif  //GRAPH_HPP

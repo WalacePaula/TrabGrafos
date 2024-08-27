@@ -1,19 +1,22 @@
 #include "Graph.hpp"
+#include "defines.hpp"
+
+using namespace std;
 
 Graph::Graph(std::ifstream& instance, bool directed, bool weighted_edges, bool weighted_nodes)
     : _number_of_nodes(0), _number_of_edges(0), _directed(directed),
       _weighted_edges(weighted_edges), _weighted_nodes(weighted_nodes), _first(nullptr), _last(nullptr)
 {
-    // LÍ o n˙mero de nÛs
+    // LÔøΩ o nÔøΩmero de nÔøΩs
     size_t num_nodes;
     instance >> num_nodes;
 
-    // LÍ as arestas entre os nÛs
+    // LÔøΩ as arestas entre os nÔøΩs
     size_t node_id_1, node_id_2;
     float weight;
 
     for (size_t i = 1; i <= num_nodes; i++) {
-        add_node(i, weight); // Adiciona o nÛ
+        add_node(i, weight); // Adiciona o nÔøΩ
     }
     while (instance >> node_id_1 >> node_id_2 >> weight) {
         add_edge(node_id_1, node_id_2, weight); // Adiciona a aresta
@@ -31,51 +34,51 @@ Graph::~Graph()
 
 void Graph::remove_node(size_t node_id)
 {
-    // Verifica se o grafo est· vazio
+    // Verifica se o grafo estÔøΩ vazio
     if (_first == nullptr) return;
 
     Node* current = _first;
     Node* previous = nullptr;
 
-    // Localiza o nÛ a ser removido
+    // Localiza o nÔøΩ a ser removido
     while (current != nullptr && current->_id != node_id) {
         previous = current;
         current = current->_next_node;
     }
 
-    if (current == nullptr) return; // NÛ n„o encontrado
+    if (current == nullptr) return; // NÔøΩ nÔøΩo encontrado
 
-    // Percorre todos os nÛs para remover as arestas que tÍm como alvo o nÛ a ser removido
+    // Percorre todos os nÔøΩs para remover as arestas que tÔøΩm como alvo o nÔøΩ a ser removido
     Node* node_to_check = _first;
     while (node_to_check != nullptr) {
         remove_edge(node_to_check->_id, node_id);
         node_to_check = node_to_check->_next_node;
     }
 
-    // Remove todas as arestas conectadas ao nÛ a ser removido
+    // Remove todas as arestas conectadas ao nÔøΩ a ser removido
     while (current->_first_edge != nullptr) {
         Edge* temp = current->_first_edge;
         current->_first_edge = current->_first_edge->_next_edge;
         delete temp;
     }
 
-    // Ajusta os ponteiros para remover o nÛ da lista
+    // Ajusta os ponteiros para remover o nÔøΩ da lista
     if (previous != nullptr) {
         previous->_next_node = current->_next_node;
     } else {
-        _first = current->_next_node; // Caso o nÛ removido seja o primeiro
+        _first = current->_next_node; // Caso o nÔøΩ removido seja o primeiro
     }
 
     if (current->_next_node != nullptr) {
         current->_next_node->_previous_node = previous;
     } else {
-        _last = previous; // Caso o nÛ removido seja o ˙ltimo
+        _last = previous; // Caso o nÔøΩ removido seja o ÔøΩltimo
     }
 
-    // Diminui o n˙mero de nÛs
+    // Diminui o nÔøΩmero de nÔøΩs
     _number_of_nodes--;
 
-    // Libera a memÛria do nÛ removido
+    // Libera a memÔøΩria do nÔøΩ removido
     delete current;
 }
 
@@ -83,12 +86,12 @@ void Graph::remove_edge(size_t node_id_1, size_t node_id_2)
 {
     Node* node_1 = _first;
 
-    // Encontra o nÛ de origem
+    // Encontra o nÔøΩ de origem
     while (node_1 != nullptr && node_1->_id != node_id_1) {
         node_1 = node_1->_next_node;
     }
 
-    if (node_1 == nullptr) return; // NÛ n„o encontrado
+    if (node_1 == nullptr) return; // NÔøΩ nÔøΩo encontrado
 
     Edge* current_edge = node_1->_first_edge;
     Edge* previous_edge = nullptr;
@@ -99,7 +102,7 @@ void Graph::remove_edge(size_t node_id_1, size_t node_id_2)
         current_edge = current_edge->_next_edge;
     }
 
-    if (current_edge == nullptr) return; // Aresta n„o encontrada
+    if (current_edge == nullptr) return; // Aresta nÔøΩo encontrada
 
     // Remove a aresta
     if (previous_edge != nullptr) {
@@ -108,23 +111,23 @@ void Graph::remove_edge(size_t node_id_1, size_t node_id_2)
         node_1->_first_edge = current_edge->_next_edge; // Caso seja a primeira aresta
     }
 
-    // Diminui o n˙mero de arestas do nÛ e do grafo
+    // Diminui o nÔøΩmero de arestas do nÔøΩ e do grafo
     node_1->_number_of_edges--;
     _number_of_edges--;
 
-    // Libera a memÛria da aresta removida
+    // Libera a memÔøΩria da aresta removida
     delete current_edge;
 
-    // Se o grafo n„o for direcionado, remove a aresta oposta
+    // Se o grafo nÔøΩo for direcionado, remove a aresta oposta
     if (!_directed) {
         Node* node_2 = _first;
 
-        // Encontra o nÛ de destino
+        // Encontra o nÔøΩ de destino
         while (node_2 != nullptr && node_2->_id != node_id_2) {
             node_2 = node_2->_next_node;
         }
 
-        if (node_2 == nullptr) return; // NÛ de destino n„o encontrado
+        if (node_2 == nullptr) return; // NÔøΩ de destino nÔøΩo encontrado
 
         Edge* current_edge_opposite = node_2->_first_edge;
         Edge* previous_edge_opposite = nullptr;
@@ -135,7 +138,7 @@ void Graph::remove_edge(size_t node_id_1, size_t node_id_2)
             current_edge_opposite = current_edge_opposite->_next_edge;
         }
 
-        if (current_edge_opposite == nullptr) return; // Aresta oposta n„o encontrada
+        if (current_edge_opposite == nullptr) return; // Aresta oposta nÔøΩo encontrada
 
         // Remove a aresta oposta
         if (previous_edge_opposite != nullptr) {
@@ -144,10 +147,10 @@ void Graph::remove_edge(size_t node_id_1, size_t node_id_2)
             node_2->_first_edge = current_edge_opposite->_next_edge; // Caso seja a primeira aresta
         }
 
-        // Diminui o n˙mero de arestas do nÛ de destino
+        // Diminui o nÔøΩmero de arestas do nÔøΩ de destino
         node_2->_number_of_edges--;
 
-        // Libera a memÛria da aresta oposta removida
+        // Libera a memÔøΩria da aresta oposta removida
         delete current_edge_opposite;
     }
 }
@@ -157,18 +160,18 @@ Node* Graph::find_node(size_t node_id)
     Node* current = _first;
     while (current != nullptr) {
         if (current->_id == node_id) {
-            return current; // NÛ encontrado
+            return current; // NÔøΩ encontrado
         }
         current = current->_next_node;
     }
-    return nullptr; // NÛ n„o encontrado
+    return nullptr; // NÔøΩ nÔøΩo encontrado
 }
 
 void Graph::add_node(size_t node_id, float weight)
 {
-    // Verifica se o nÛ j· existe
+    // Verifica se o nÔøΩ jÔøΩ existe
     if (find_node(node_id) != nullptr) {
-        return; // NÛ j· existe, n„o faz nada
+        return; // NÔøΩ jÔøΩ existe, nÔøΩo faz nada
     }
 
     if(!_weighted_nodes){
@@ -181,65 +184,67 @@ void Graph::add_node(size_t node_id, float weight)
     new_node->_number_of_edges = 0;
     new_node->_first_edge = nullptr;
     new_node->_next_node = nullptr;
-    new_node->_previous_node = _last; // O ˙ltimo nÛ existente se torna o anterior
+    new_node->_previous_node = _last; // O ÔøΩltimo nÔøΩ existente se torna o anterior
 
     if (_first == nullptr) {
-        // Se o grafo estiver vazio, este nÛ È o primeiro
+        // Se o grafo estiver vazio, este nÔøΩ ÔøΩ o primeiro
         _first = new_node;
     } else {
-        // Caso contr·rio, o ˙ltimo nÛ existente aponta para o novo nÛ
+        // Caso contrÔøΩrio, o ÔøΩltimo nÔøΩ existente aponta para o novo nÔøΩ
         _last->_next_node = new_node;
     }
 
-    // Atualiza o ˙ltimo nÛ
+    // Atualiza o ÔøΩltimo nÔøΩ
     _last = new_node;
 
-    // Incrementa o n˙mero de nÛs
+    // Incrementa o nÔøΩmero de nÔøΩs
     _number_of_nodes++;
 }
 
 void Graph::add_edge(size_t node_id_1, size_t node_id_2, float weight)
 {
-    // Encontrar o nÛ de origem
+    // Encontrar o nÔøΩ de origem
     Node* node_1 = _first;
     while (node_1 != nullptr && node_1->_id != node_id_1) {
         node_1 = node_1->_next_node;
     }
 
-    if (node_1 == nullptr) return; // NÛ de origem n„o encontrado
+    if (node_1 == nullptr) return; // NÔøΩ de origem nÔøΩo encontrado
 
-    // Criar uma nova aresta para o nÛ de origem
+    // Criar uma nova aresta para o nÔøΩ de origem
     Edge* new_edge_1 = new Edge;
     new_edge_1->_weight = weight;
     new_edge_1->_target_id = node_id_2;
     new_edge_1->_next_edge = node_1->_first_edge;
     node_1->_first_edge = new_edge_1;
 
-    // Incrementar o n˙mero de arestas do nÛ de origem e do grafo
+    // Incrementar o nÔøΩmero de arestas do nÔøΩ de origem e do grafo
     node_1->_number_of_edges++;
     _number_of_edges++;
 
     if (!_directed) {
-        // Se o grafo n„o È direcionado, adicionar a aresta inversa
+        // Se o grafo nÔøΩo ÔøΩ direcionado, adicionar a aresta inversa
         Node* node_2 = _first;
         while (node_2 != nullptr && node_2->_id != node_id_2) {
             node_2 = node_2->_next_node;
         }
 
-        if (node_2 == nullptr) return; // NÛ de destino n„o encontrado
+        if (node_2 == nullptr) return; // NÔøΩ de destino nÔøΩo encontrado
 
-        // Criar uma nova aresta para o nÛ de destino
+        // Criar uma nova aresta para o nÔøΩ de destino
         Edge* new_edge_2 = new Edge;
         new_edge_2->_weight = weight;
         new_edge_2->_target_id = node_id_1;
         new_edge_2->_next_edge = node_2->_first_edge;
         node_2->_first_edge = new_edge_2;
 
-        // Incrementar o n˙mero de arestas do nÛ de destino
+        // Incrementar o nÔøΩmero de arestas do nÔøΩ de destino
         node_2->_number_of_edges++;
         _number_of_edges++;
     }
 }
+
+
 
 void print_graph(std::ofstream &output_file)
 {}
@@ -277,7 +282,7 @@ int Graph::conected(size_t node_id_1, size_t node_id_2)
         node_1 = node_1->_next_node;
     }
 
-    if (node_1 == nullptr) return 0; // NÛ n„o encontrado
+    if (node_1 == nullptr) return 0; // NÔøΩ nÔøΩo encontrado
 
     Edge* current_edge = node_1->_first_edge;
     while (current_edge != nullptr) {
@@ -287,5 +292,366 @@ int Graph::conected(size_t node_id_1, size_t node_id_2)
         current_edge = current_edge->_next_edge;
     }
 
-    return 0; // N„o conectado
+    return 0; // NÔøΩo conectado
+}
+
+bool Graph::ehConexo(vector<size_t> &vertices)
+{
+    if (vertices.empty()) return false;
+
+    vector<bool> visitado(vertices.size(), false);
+    vector<size_t> fila;
+    vector<size_t> mapa_indices(vertices.size());
+
+    // Mapeia os v√©rtices para √≠ndices cont√≠nuos
+    for (size_t i = 0; i < vertices.size(); ++i) {
+        mapa_indices[i] = vertices[i];
+    }
+
+    // Adiciona o primeiro v√©rtice √† fila
+    fila.push_back(vertices[0]);
+    size_t indice_inicio = 0;
+    visitado[indice_inicio] = true;
+
+    // Processa a fila
+    while (!fila.empty()) {
+        size_t atual = fila.front();  // Pega o primeiro elemento da fila
+        fila.erase(fila.begin());     // Remove o primeiro elemento da fila
+
+        Node* noAtual = find_node(atual);
+        if (noAtual == nullptr) 
+            continue;
+
+        // Visita os vizinhos
+        for (Edge* aresta = noAtual->_first_edge; aresta != nullptr; aresta = aresta->_next_edge) {
+            size_t alvo = aresta->_target_id;
+            auto it = find(mapa_indices.begin(), mapa_indices.end(), alvo);
+            if (it != mapa_indices.end()) {
+                size_t indice_destino = distance(mapa_indices.begin(), it);
+                if (!visitado[indice_destino]) {
+                    visitado[indice_destino] = true;
+                    fila.push_back(alvo);  // Adiciona o novo v√©rtice a fila
+                }
+            }
+        }
+    }
+
+    // Verifica se todos os v√©rtices foram visitados
+    for (size_t i = 0; i < visitado.size(); ++i) {
+    if (!visitado[i])
+        return false;
+    }
+    return true;
+}
+
+size_t Graph::encontrar_pai(size_t v, vector<size_t>& pai) {
+    // Se o v√©rtice v n√£o √© seu pr√≥prio pai (n√£o √© o representante do conjunto)
+    if (pai[v] != v) {
+        // Faz uma chamada recursiva para encontrar o pai do pai de v
+        pai[v] = encontrar_pai(pai[v], pai);
+    }
+    // Retorna o pai do conjunto ao qual v pertence
+    return pai[v];
+}
+
+void Graph::unir_conjuntos(size_t a, size_t b, vector<size_t>& pai, vector<size_t>& rank) {
+    // Encontra o pai dos conjuntos aos quais 'a' e 'b' pertencem
+    a = encontrar_pai(a, pai);
+    b = encontrar_pai(b, pai);
+    
+    // Se 'a' e 'b' pertencem a conjuntos diferentes
+    if (a != b) {
+        // Une os conjuntos com base na profundidade (rank)
+        if (rank[a] < rank[b]) {
+            swap(a, b); // Troca a com b
+        }
+        // Define 'a' como o pai de 'b'
+        pai[b] = a;
+        
+        // Se os ranks dos conjuntos eram iguais, aumenta o rank do novo pai
+        if (rank[a] == rank[b]) {
+            rank[a]++;
+        }
+    }
+}
+
+Graph* Graph::arvoreGeradoraMinPrim(vector<size_t>& vertices) {
+    if (_directed) {
+        cout << endl << "So funciona para grafos nao direcionados" << endl;
+        return nullptr;
+    }
+
+    if (!ehConexo(vertices)) {
+        cout << endl << "Subgrafo induzido pelos vertices {";
+        for (size_t i = 0; i < vertices.size(); ++i) {
+            cout << vertices[i];
+            if (i < vertices.size() - 1) cout << ", ";
+        }
+        cout << "} nao eh conexo" << endl;
+        return nullptr;
+    }
+
+    // Cria um novo grafo para a √°rvore geradora m√≠nima
+    Graph* arvGeradoraMinPrim = new Graph();
+    arvGeradoraMinPrim->_directed = false;
+
+    // Mapeia os v√©rtices para √≠ndices cont√≠nuos
+    vector<size_t> vertex_index(vertices.size());
+    vector<size_t> index_to_vertex(vertices.size());
+    size_t index = 0;
+
+    for (size_t i = 0; i < vertices.size(); ++i) {
+        vertex_index[index] = vertices[i];
+        index_to_vertex[index] = vertices[i];
+        arvGeradoraMinPrim->add_node(vertices[i]);  // Adiciona os n√≥s ao grafo arvGeradoraMinPrim
+        ++index;
+    }
+
+    // Vetores para armazenar o n√≥ adjacente mais pr√≥ximo, os pesos das arestas e se o n√≥ est√° no arvGeradoraMinPrim
+    const float INF = INF; // Valor grande para representar infinito
+    vector<size_t> prox(vertices.size(), -1); 
+    vector<float> c(vertices.size(), INF); 
+    vector<bool> in_arvGeradoraMinPrim(vertices.size(), false);
+
+    // Inicializa o vetor de proximidade com um n√≥ arbitr√°rio
+    size_t start_node = vertices[0];
+    size_t start_index = 0;
+    c[start_index] = 0;  // Define o peso inicial do n√≥ de partida como 0
+    prox[start_index] = start_index;
+    in_arvGeradoraMinPrim[start_index] = true;
+
+    // Encontra o menor peso de aresta conectando ao n√≥ inicial
+    Node* start_node_ptr = find_node(start_node);
+    for (Edge* e = start_node_ptr->_first_edge; e != nullptr; e = e->_next_edge) {
+        for (size_t i = 0; i < vertex_index.size(); ++i) {
+            if (vertex_index[i] == e->_target_id) {
+                size_t target_index = i;
+                c[target_index] = e->_weight;
+                prox[target_index] = start_index;
+                break;
+            }
+        }
+    }
+
+    size_t num_nodes = vertices.size();
+    size_t cont = 0;
+
+    while (cont < num_nodes - 1) {
+        size_t u = -1;
+        size_t v = -1;
+        float min_weight = INF;
+
+        // Encontra a aresta de menor peso conectando o arvGeradoraMinPrim ao novo v√©rtice
+        for (size_t i = 0; i < vertices.size(); ++i) {
+            if (!in_arvGeradoraMinPrim[i] && c[i] < min_weight) {
+                min_weight = c[i];
+                v = i;
+                u = prox[i];
+            }
+        }
+
+        if (min_weight == INF) {
+            cout << "Nao ha arestas disponiveis para adicionar a arvore geradora minima" << endl;
+            delete arvGeradoraMinPrim;
+            return nullptr;
+        }
+
+        // Adiciona a aresta ao arvGeradoraMinPrim
+        size_t vertex_u = index_to_vertex[u];
+        size_t vertex_v = index_to_vertex[v];
+        arvGeradoraMinPrim->add_edge(vertex_u, vertex_v, min_weight);
+        in_arvGeradoraMinPrim[v] = true;
+
+        // Atualiza o vetor 'prox' e 'c' para os n√≥s n√£o inclu√≠dos no arvGeradoraMinPrim
+        Node* vertex_v_ptr = find_node(vertex_v);
+        for (Edge* e = vertex_v_ptr->_first_edge; e != nullptr; e = e->_next_edge) {
+            for (size_t i = 0; i < vertex_index.size(); ++i) {
+                if (vertex_index[i] == e->_target_id) {
+                    size_t target_index = i;
+                    if (!in_arvGeradoraMinPrim[target_index] && e->_weight < c[target_index]) {
+                        c[target_index] = e->_weight;
+                        prox[target_index] = v;
+                    }
+                    break;
+                }
+            }
+        }
+
+        ++cont;
+    }
+
+    return arvGeradoraMinPrim;
+}    
+
+Graph* Graph::arvoreGeradoraMinKruskal(vector<size_t>& vertices) {
+    if (_directed) {
+        cout << endl << "So funciona para grafos nao direcionados" << endl;
+        return nullptr;
+    }
+
+    if (!ehConexo(vertices)) {
+        cout << endl << "Subgrafo induzido pelos vertices {";
+        for (size_t i = 0; i < vertices.size(); ++i) {
+            cout << vertices[i];
+            if (i < vertices.size() - 1) cout << ", ";
+        }
+        cout << "} nao eh conexo" << endl;
+        return nullptr;
+    }
+
+    Graph* arvGeradoraMinKruskal = new Graph();
+    vector<size_t> parent(_number_of_nodes); // Ajuste o tamanho conforme necess√°rio
+    vector<size_t> rank(_number_of_nodes); // Ajuste o tamanho conforme necess√°rio
+
+    for (size_t i = 0; i < vertices.size(); ++i) {
+        size_t vertex = vertices[i];
+        parent[vertex] = vertex;
+        rank[vertex] = 0;
+        arvGeradoraMinKruskal->add_node(vertex, 0.0);
+    }
+
+    vector<tuple<float, size_t, size_t>> edges;
+
+    for (Node* node = _first; node != nullptr; node = node->_next_node) {
+        if (find(vertices.begin(), vertices.end(), node->_id) == vertices.end()) {
+            continue;
+        }
+        for (Edge* edge = node->_first_edge; edge != nullptr; edge = edge->_next_edge) {
+            if (find(vertices.begin(), vertices.end(), edge->_target_id) == vertices.end()) {
+                continue;
+            }
+            edges.push_back(make_tuple(edge->_weight, node->_id, edge->_target_id));
+        }
+    }
+
+    // Ordena as arestas pelo peso
+    sort(edges.begin(), edges.end(), [](const tuple<float, size_t, size_t>& a, const tuple<float, size_t, size_t>& b) {
+        return get<0>(a) < get<0>(b);
+    });
+
+    for (size_t i = 0; i < edges.size(); ++i) {
+        float weight = get<0>(edges[i]);
+        size_t u = get<1>(edges[i]);
+        size_t v = get<2>(edges[i]);
+
+        if (encontrar_pai(u, parent) != encontrar_pai(v, parent)) {
+            arvGeradoraMinKruskal->add_edge(u, v, weight);
+            unir_conjuntos(u, v, parent, rank);
+        }
+    }
+
+    return arvGeradoraMinKruskal;
+}
+
+void Graph::print_arvoreGeradoraMinima(Graph *arvGeradoraMin) {
+    if (!arvGeradoraMin) {
+        cout << "Arvore Geradora Minima nao existe." << endl;
+        return;
+    }
+    cout << endl;
+    // Itera sobre todos os n√≥s e suas arestas para imprimir
+    for (Node* node = arvGeradoraMin->_first; node != nullptr; node = node->_next_node) {
+        Edge* edge = node->_first_edge;
+        while (edge != nullptr) {
+            // Garante que a aresta n√£o seja impressa duas vezes
+            if (edge->_target_id > node->_id) {
+                cout << "Aresta: " << node->_id << " - " << edge->_target_id
+                     << " | Peso: " << edge->_weight << endl;
+            }
+            edge = edge->_next_edge;
+        }
+    }
+}
+
+vector<size_t> Graph::get_fechoTransitivoDireto(size_t vertice_inicio)
+{
+   if (_directed == false) {
+        cout << endl << "Nao eh possivel obter o fecho transitivo direto de um grafo nao direcionado" << endl;
+        return {};
+    }   
+
+    // Cria um vetor para armazenar o fecho transitivo direto do v√©rtice inicial
+    vector<size_t> fechoTransitivoDireto;
+    // Cria um vetor para acompanhar os v√©rtices j√° visitados
+    vector<bool> visitado(_number_of_nodes, false);
+
+    // Encontra o n√≥ inicial no grafo com base no ID do v√©rtice
+    Node* no_inicio = find_node(vertice_inicio);
+    if (!no_inicio) {
+        cout << "Vertice inicial nao encontrado" << endl;
+        return fechoTransitivoDireto;
+    }
+
+    // Inicia a busca em profundidade (DFS) a partir do v√©rtice inicial
+    buscaProfundidade(vertice_inicio, fechoTransitivoDireto, visitado);
+
+    // Retorna o vetor contendo o fecho transitivo direto do v√©rtice inicial
+    return fechoTransitivoDireto;
+}
+
+void Graph::buscaProfundidade(size_t vertice, vector<size_t>& resultado, vector<bool>& visitado) {
+     if (visitado[vertice]) return;
+
+    // Marca o v√©rtice como visitado
+    visitado[vertice] = true;
+    // Adiciona o v√©rtice ao resultado
+    resultado.push_back(vertice);
+
+    // Encontra o n√≥ atual no grafo
+    Node* node = find_node(vertice);
+    if (!node) return;
+
+    // Percorre todas as arestas conectadas ao n√≥ atual
+    for (Edge* edge = node->_first_edge; edge != nullptr; edge = edge->_next_edge) {
+        size_t vizinho = edge->_target_id;
+
+        // Se o vizinho ainda n√£o foi visitado, realiza a busca em profundidade nele
+        if (!visitado[vizinho]) {
+            buscaProfundidade(vizinho, resultado, visitado);
+        }
+    }
+}
+
+vector<size_t> Graph::get_fechoTransitivoIndireto(size_t vertice_inicio) {
+    if (!_directed) {
+        cout << "Nao eh possivel obter o fecho transitivo indireto de um grafo nao direcionado." << endl;
+        return {};
+    }
+
+    // Criar um vetor para armazenar o fecho transitivo indireto do v√©rtice inicial
+    vector<size_t> fecho_transitivo_indireto;
+    // Criar um vetor para acompanhar os v√©rtices j√° visitados
+    vector<bool> visitado(_number_of_nodes + 1, false);
+
+    // Realiza a busca em profundidade considerando a invers√£o das arestas
+    buscaProfundidadeInvertida(vertice_inicio, fecho_transitivo_indireto, visitado);
+
+    return fecho_transitivo_indireto;
+}
+
+void Graph::buscaProfundidadeInvertida(size_t vertice, vector<size_t>& resultado, vector<bool>& visitado) {
+    if (visitado[vertice]) return;
+
+    // Marca o v√©rtice como visitado
+    visitado[vertice] = true;
+    // Adiciona o v√©rtice ao resultado
+    resultado.push_back(vertice);
+
+    // Encontra o n√≥ atual no grafo
+    Node* node = find_node(vertice);
+    if (!node) return;
+
+    // Percorre todos os v√©rtices no grafo e verifica se existe uma aresta que seria invertida
+    for (Node* potencial_vizinho = _first; potencial_vizinho != nullptr; potencial_vizinho = potencial_vizinho->_next_node) {
+        for (Edge* edge = potencial_vizinho->_first_edge; edge != nullptr; edge = edge->_next_edge) {
+            if (edge->_target_id == vertice) { // Verifica se a aresta seria invertida
+                size_t vizinho = potencial_vizinho->_id;
+
+                // Se o vizinho ainda n√£o foi visitado, realiza a busca em profundidade nele
+                if (!visitado[vizinho]) {
+                    buscaProfundidadeInvertida(vizinho, resultado, visitado);
+                }
+            }
+        }
+    }
 }

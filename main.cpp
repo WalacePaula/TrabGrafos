@@ -11,10 +11,10 @@ bool to_bool(const string& str) {
 
 int main(int argc, char* argv[]) {
     if (argc == 6) {
-        std::ifstream instance_file(argv[1]);
+        ifstream instance_file(argv[1]);
 
         if (!instance_file.is_open()) {
-            std::cerr << "Erro ao abrir o arquivo de instancia!" << std::endl;
+            cerr << "Erro ao abrir o arquivo de instancia!" << endl;
             return 1;
         }
 
@@ -27,28 +27,59 @@ int main(int argc, char* argv[]) {
 
         graph->print_graph();
 
-        std::cout << "Imprimindo sequencia de nos " << std::endl;
+        cout << "Imprimindo sequencia de nos " << endl;
         graph->imprime_sequencia_nos();
+
+        // Exemplo de conjunto de vértices para a árvore geradora mínima
+        vector<size_t> vertices = {1, 4, 6};
+        // Chamada do método arvoreGeradoraMinKruskal
+        Graph* subgrafoAGM_prim = graph->arvoreGeradoraMinPrim(vertices);
+        subgrafoAGM_prim->print_arvoreGeradoraMinima(subgrafoAGM_prim); // Imprime o subgrafo arvore geradora minima de PRIM
+
+        // Chamada do metodo arvoreGeradoraMinKruskal
+        Graph * subgrafoAGM_kruskal = graph->arvoreGeradoraMinKruskal(vertices);
+        subgrafoAGM_kruskal->print_arvoreGeradoraMinima(subgrafoAGM_kruskal); // Imprime o subgrafo arvore geradora minima de KRUSKAL
+
+        // Obtém o fecho transitivo DIRETO
+        size_t verticeInicio = 6; 
+        vector<size_t> fechoTransitivo_direto = graph->get_fechoTransitivoDireto(verticeInicio);
+        if(!fechoTransitivo_direto.empty()){
+            cout << endl << "Fecho transitivo direto do vertice " << verticeInicio << ":" << endl;
+            for (size_t i = 0; i < fechoTransitivo_direto.size(); ++i) {
+                cout << fechoTransitivo_direto[i] << " --> ";
+            }
+            cout << "null"<< endl;
+        }    
+
+        // Obtém o fecho transitivo INDIRETO
+        vector<size_t> fechoTransitivo_indireto = graph->get_fechoTransitivoIndireto(verticeInicio);
+        if(!fechoTransitivo_indireto.empty()){
+            cout << endl << "Fecho transitivo indireto do vertice " << verticeInicio << ":" << endl;
+            for (size_t i = 0; i < fechoTransitivo_indireto.size(); ++i) {
+                cout << fechoTransitivo_indireto[i] << " --> ";
+            }
+            cout << "null"<< endl;
+        }   
 
         graph->remove_node(3);
-        std::cout << "Removendo no 3" << std::endl;
+        cout << "Removendo no 3" << endl;
         graph->print_graph();
 
-        std::cout << "Imprimindo sequencia de nos " << std::endl;
+        cout << "Imprimindo sequencia de nos " << endl;
         graph->imprime_sequencia_nos();
 
-        std::cout << "Removendo no 2" << std::endl;
+        cout << "Removendo no 2" << endl;
         graph->remove_node(2);
         graph->print_graph();
 
-        std::cout << "Imprimindo sequencia de nos " << std::endl;
-        graph->imprime_sequencia_nos();
+        cout << "Imprimindo sequencia de nos " << endl;
+        graph->imprime_sequencia_nos(); 
 
         delete graph;  // Não se esqueça de deletar o ponteiro para evitar vazamento de memória
 
         return 0;
     } else {
-        std::cout << "ERRO: Espera-se: ./<arquivo_entrada> <arquivo_saida> <Op_Direc> <Op_PesoAresta> <Op_PesoNos>" << std::endl;
+        cout << "ERRO: Espera-se: ./<arquivo_entrada> <arquivo_saida> <Op_Direc> <Op_PesoAresta> <Op_PesoNos>" << endl;
         return 1;
     }
 }
@@ -140,10 +171,10 @@ int main(int argc, char* argv[]) {
 
 
 
-     std::ifstream instance_file("instances/instance1.txt");
+     ifstream instance_file("instances/instance1.txt");
 
     if (!instance_file.is_open()) {
-        std::cerr << "Erro ao abrir o arquivo de instância!" << std::endl;
+        cerr << "Erro ao abrir o arquivo de instância!" << endl;
         return 1;
     }
     Graph graph(instance_file);
