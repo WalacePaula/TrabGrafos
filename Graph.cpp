@@ -560,11 +560,9 @@ void Graph::min_path_dijkstra(size_t node_id_1, size_t node_id_2){
     cout << "\nDistancia total: " << estimativa[node_id_2] << endl;
 }
 
-void Graph::min_path_floyd(size_t node_id_1, size_t node_id_2) {
-     // Contar o número de vértices
-    size_t numVertices = this->_number_of_nodes;
+string Graph::min_path_floyd(size_t node_id_1, size_t node_id_2) {
+    size_t numVertices = this->_number_of_nodes +1;
     float infinity = 1e10;
-    // Inicializar a matriz de distâncias
     vector<vector<float>> L(numVertices, vector<float>(numVertices, infinity));
 
     // Preencher a matriz com os pesos das arestas
@@ -585,27 +583,47 @@ void Graph::min_path_floyd(size_t node_id_1, size_t node_id_2) {
                         L[i][j] = L[i][k] + L[k][j];
                     }
                 }
-                if (k==i) {
+                if (k == i) {
                     L[k][i] = 0; // Distância de um nó para ele mesmo é 0
                 }
             }
         }
     }
 
-    // Imprimir o caminho mínimo entre os dois vértices
-    cout << "Caminho minimo entre " << node_id_1 << " e " << node_id_2 << " é: ";
+    // Verificar se há caminho entre node_id_1 e node_id_2
     if (L[node_id_1][node_id_2] == infinity) {
-        cout << "Não existe caminho." << endl;
-    } else {
-        cout << L[node_id_1][node_id_2] << endl;
+        return "Não existe caminho.";
     }
 
-    for (size_t k = 1; k < numVertices; ++k) {
-        for (size_t i = 1; i < numVertices; ++i) {
-                cout << "[" << L[k][i] << "]";
+    // Criar a string do caminho mínimo
+    string caminho_minimo = to_string(node_id_1);  // Inicia o caminho com o nó de origem
+    size_t atual = node_id_1;
+
+    // Percorre o caminho mínimo a partir da matriz de distâncias
+    while (atual != node_id_2) {
+        float menor_distancia = infinity;
+        size_t proximo = (size_t)-1;
+
+        // Encontra o próximo nó no caminho mínimo
+        for (size_t i = 0; i < numVertices; ++i) {
+            if (L[atual][i] < menor_distancia && i != atual) {
+                menor_distancia = L[atual][i];
+                proximo = i;
+            }
         }
-        cout << endl;
+
+        // Adiciona o próximo nó ao caminho
+        if (proximo != (size_t)-1) {
+            caminho_minimo += " -> " + to_string(proximo);
+            atual = proximo;
+        } else {
+            break; // Se não encontrar próximo nó, para o laço
+        }
     }
+
+    cout << "Distância total: " << L[node_id_1][node_id_2] << endl;
+    // Exibe o caminho e a distância total
+    return "Caminho mínimo: " + caminho_minimo;
 }
 
 size_t Graph::encontrar_pai(size_t v, vector<size_t>& pai) {
@@ -749,6 +767,7 @@ Graph* Graph::arvoreGeradoraMinPrim(vector<size_t>& vertices) {
 
 vector<size_t> Graph::get_fechoTransitivoDireto(size_t vertice_inicio)
 {
+
    if (_directed == false) {
         cout << endl << "Nao eh possivel obter o fecho transitivo direto de um grafo nao direcionado" << endl;
         return {};
@@ -815,3 +834,7 @@ vector<size_t> Graph::get_fechoTransitivoDireto(size_t vertice_inicio)
     // Retorna o vetor contendo o fecho transitivo direto do vértice inicial
     return fechoTransitivoDireto;
 }
+
+size_t Graph::getNum_vertices() {
+        return _number_of_nodes;
+    }

@@ -33,11 +33,11 @@ public:
     void buscaProfundidade(size_t vertice, vector<size_t>& resultado, vector<bool>& visitado);
     void buscaProfundidadeInvertida(size_t vertice, vector<size_t>& resultado, vector<bool>& visitado);
     void min_path_dijkstra(size_t node_id_1, size_t node_id_2);
-    void min_path_floyd(size_t node_id_1, size_t node_id_2);
+    string min_path_floyd(size_t node_id_1, size_t node_id_2);
     size_t encontrar_pai(size_t v, vector<size_t>& pai);
     void print_arvoreGeradoraMinima(Graph *arvGeradoraMin);
     void unir_conjuntos(size_t a, size_t b, vector<size_t>& pai, vector<size_t>& rank);
-
+    size_t getNum_vertices();
 
 private:
     size_t _number_of_nodes;

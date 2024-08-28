@@ -61,17 +61,23 @@ int main(int argc, char* argv[]) {
 
             switch (option) {
                 case 1: {
-                    int vertex_id;
+                    size_t vertex_id;
                     cout << "Digite o ID do vertice: ";
                     cin >> vertex_id;
-                    //graph->fecho_transitivo_direto(vertex_id);
+                    vector<size_t> result = graph->get_fechoTransitivoDireto(vertex_id);
+                    for (int i = 0; i < result.size(); i++)
+                        cout << result[i] << " ";
+                    cout << endl;
                     break;
                 }
                 case 2: {
                     int vertex_id;
                     cout << "Digite o ID do vertice: ";
                     cin >> vertex_id;
-                    //graph->fecho_transitivo_indireto(vertex_id);
+                    vector<size_t> result = graph->get_fechoTransitivoIndireto(vertex_id);
+                    for (int i = 0; i < result.size(); i++)
+                        cout << result[i] << " ";
+                    cout << endl;
                     break;
                 }
                 case 3: {
@@ -89,29 +95,88 @@ int main(int argc, char* argv[]) {
                     cin >> start_id;
                     cout << "Digite o ID do vertice de destino: ";
                     cin >> end_id;
-                    graph->min_path_floyd(start_id, end_id);
+                    string result = graph->min_path_floyd(start_id, end_id);
+                    cout << result << endl;
                     break;
                 }
                 case 5: {
-                    // Função para gerar a árvore geradora mínima usando Prim
+                    std::vector<size_t> vertices;
+                    size_t num_vertices;
+
+                    std::cout << "Digite o número de vértices do subconjunto X: ";
+                    std::cin >> num_vertices;
+
+                    std::cout << "Digite os IDs dos vértices do subconjunto X: ";
+                    for(size_t i = 0; i < num_vertices; ++i) {
+                        size_t vertex;
+                        std::cin >> vertex;
+                        vertices.push_back(vertex);
+                    }
+
+                    Graph* arvGeradoraMin = graph->arvoreGeradoraMinPrim(vertices);
+                    std::cout << "Árvore Geradora Mínima (Prim) gerada com sucesso!\n";
+                    graph->print_arvoreGeradoraMinima(arvGeradoraMin);
+
+                    delete arvGeradoraMin;
                     break;
                 }
                 case 6: {
-                    // Função para gerar a árvore geradora mínima usando Kruskal
+                    std::vector<size_t> vertices;
+                    size_t num_vertices;
+
+                    std::cout << "Digite o número de vértices do subconjunto X: ";
+                    std::cin >> num_vertices;
+
+                    std::cout << "Digite os IDs dos vértices do subconjunto X: ";
+                    for(size_t i = 0; i < num_vertices; ++i) {
+                        size_t vertex;
+                        std::cin >> vertex;
+                        vertices.push_back(vertex);
+                    }
+
+                    Graph* arvGeradoraMin = graph->arvoreGeradoraMinKruskal(vertices);
+                    std::cout << "Árvore Geradora Mínima (Kruskal) gerada com sucesso!\n";
+                    graph->print_arvoreGeradoraMinima(arvGeradoraMin);
+
+                    delete arvGeradoraMin;
                     break;
                 }
+
                 case 7: {
-                    // Função para caminhamento em profundidade
+                    size_t vertice;
+                    std::vector<size_t> resultado;
+                    std::vector<bool> visitado(graph->getNum_vertices(), false);
+
+                    std::cout << "Digite o ID do vértice de início: ";
+                    std::cin >> vertice;
+
+                    graph->buscaProfundidade(vertice, resultado, visitado);
+
+                    std::cout << "Ordem de caminhamento em profundidade a partir do vértice " << vertice << ":\n";
+                    for(size_t v : resultado) {
+                        std::cout << v << " ";
+                    }
+                    std::cout << std::endl;
+
                     break;
                 }
+
                 case 8: {
                     // Função para calcular raio, diâmetro, centro e periferia do grafo
                     break;
                 }
                 case 9: {
-                    // Função para calcular conjunto de vértices de articulação
+                    /*std::vector<size_t> vertices_articulacao = graph->get_verticesArticulacao();
+
+                    std::cout << "Conjunto de vértices de articulação:\n";
+                    for(size_t v : vertices_articulacao) {
+                        std::cout << v << " ";
+                    }
+                    std::cout << std::endl;*/
+
                     break;
                 }
+
                 case 10:
                     cout << "Saindo do programa...\n";
                     break;
