@@ -4,6 +4,8 @@
 #include "Node.hpp"
 #include "defines.hpp"
 
+using namespace std;
+
 class Graph
 {
 public:
@@ -23,6 +25,16 @@ public:
     int conected(size_t node_id_1, size_t node_id_2);
     void imprime_sequencia_nos();
     Node* find_node(size_t node_id);
+    void min_path_dijkstra(size_t node_id_1, size_t node_id_2);
+    void min_path_floyd(size_t node_id_1, size_t node_id_2);
+    size_t encontrar_pai(size_t v, vector<size_t>& pai);
+    bool ehConexo(vector<size_t> &vertices);
+    vector<size_t> get_fechoTransitivoDireto(size_t vertice_inicio);
+    void print_arvoreGeradoraMinima(Graph *arvGeradoraMin);
+    Graph* arvoreGeradoraMinKruskal(vector<size_t>& vertices);
+    Graph* arvoreGeradoraMinPrim(vector<size_t>& vertices);
+    void unir_conjuntos(size_t a, size_t b, vector<size_t>& pai, vector<size_t>& rank);
+
 
 private:
     size_t _number_of_nodes;
