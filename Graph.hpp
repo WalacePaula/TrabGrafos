@@ -9,7 +9,7 @@ using namespace std;
 class Graph
 {
 public:
-    /*Assinatura dos m�todos b�sicos para o funcionamento da classe*/
+    /*Assinatura dos metodos basicos para o funcionamento da classe*/
 
     Graph(std::ifstream& instance, bool directed, bool weighted_edges, bool weighted_nodes);
     Graph();
@@ -30,9 +30,14 @@ public:
     Graph* arvoreGeradoraMinPrim(vector<size_t>& vertices);
     vector<size_t> get_fechoTransitivoDireto(size_t vertice_inicio);
     vector<size_t> get_fechoTransitivoIndireto(size_t vertice_inicio);
-    void print_arvoreGeradoraMinima(Graph *mst);
     void buscaProfundidade(size_t vertice, vector<size_t>& resultado, vector<bool>& visitado);
     void buscaProfundidadeInvertida(size_t vertice, vector<size_t>& resultado, vector<bool>& visitado);
+    void min_path_dijkstra(size_t node_id_1, size_t node_id_2);
+    void min_path_floyd(size_t node_id_1, size_t node_id_2);
+    size_t encontrar_pai(size_t v, vector<size_t>& pai);
+    void print_arvoreGeradoraMinima(Graph *arvGeradoraMin);
+    void unir_conjuntos(size_t a, size_t b, vector<size_t>& pai, vector<size_t>& rank);
+
 
 private:
     size_t _number_of_nodes;
@@ -42,8 +47,6 @@ private:
     bool   _weighted_nodes;
     Node  *_first;
     Node  *_last;
-    size_t encontrar_pai(size_t v, vector<size_t>& pai);
-    void unir_conjuntos(size_t a, size_t b, vector<size_t>& pai, vector<size_t>& rank);
 };
 
 #endif  //GRAPH_HPP
