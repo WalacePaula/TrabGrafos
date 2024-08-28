@@ -397,43 +397,45 @@ Graph* Graph::arvoreGeradoraMinKruskal(vector<size_t>& vertices) {
     return arvGeradoraMinKruskal;
 }
 
-void Graph::print_arvoreGeradoraMinima(Graph *arvGeradoraMin) {
+std::string Graph::print_arvoreGeradoraMinima(Graph *arvGeradoraMin) {
     if (!arvGeradoraMin) {
-        cout << "Arvore Geradora Minima nao existe." << endl;
-        return;
+        return "Arvore Geradora Minima nao existe.";
     }
-    cout << endl;
-    // Itera sobre todos os nÃ³s e suas arestas para imprimir
+
+    stringstream ss;
+    // Itera sobre todos os nós e suas arestas para construir a string
     for (Node* node = arvGeradoraMin->_first; node != nullptr; node = node->_next_node) {
         Edge* edge = node->_first_edge;
         while (edge != nullptr) {
-            // Garante que a aresta nÃ£o seja impressa duas vezes
+            // Garante que a aresta não seja impressa duas vezes
             if (edge->_target_id > node->_id) {
-                cout << "Aresta: " << node->_id << " - " << edge->_target_id
-                     << " | Peso: " << edge->_weight << endl;
+                ss << "Aresta: " << node->_id << " - " << edge->_target_id
+                   << " | Peso: " << edge->_weight << "\n";
             }
             edge = edge->_next_edge;
         }
     }
+
+    return ss.str();
 }
 
 void Graph::buscaProfundidade(size_t vertice, vector<size_t>& resultado, vector<bool>& visitado) {
      if (visitado[vertice]) return;
 
-    // Marca o vÃ©rtice como visitado
+    // Marca o vertice como visitado
     visitado[vertice] = true;
-    // Adiciona o vÃ©rtice ao resultado
+    // Adiciona o vertice ao resultado
     resultado.push_back(vertice);
 
-    // Encontra o nÃ³ atual no grafo
+    // Encontra o no atual no grafo
     Node* node = find_node(vertice);
     if (!node) return;
 
-    // Percorre todas as arestas conectadas ao nÃ³ atual
+    // Percorre todas as arestas conectadas ao no atual
     for (Edge* edge = node->_first_edge; edge != nullptr; edge = edge->_next_edge) {
         size_t vizinho = edge->_target_id;
 
-        // Se o vizinho ainda nÃ£o foi visitado, realiza a busca em profundidade nele
+        // Se o vizinho ainda nao foi visitado, realiza a busca em profundidade nele
         if (!visitado[vizinho]) {
             buscaProfundidade(vizinho, resultado, visitado);
         }
@@ -446,12 +448,12 @@ vector<size_t> Graph::get_fechoTransitivoIndireto(size_t vertice_inicio) {
         return {};
     }
 
-    // Criar um vetor para armazenar o fecho transitivo indireto do vÃ©rtice inicial
+    // Criar um vetor para armazenar o fecho transitivo indireto do vértice inicial
     vector<size_t> fecho_transitivo_indireto;
-    // Criar um vetor para acompanhar os vÃ©rtices jÃ¡ visitados
+    // Criar um vetor para acompanhar os vértices ja¡ visitados
     vector<bool> visitado(_number_of_nodes + 1, false);
 
-    // Realiza a busca em profundidade considerando a inversÃ£o das arestas
+    // Realiza a busca em profundidade considerando a inversão das arestas
     buscaProfundidadeInvertida(vertice_inicio, fecho_transitivo_indireto, visitado);
 
     return fecho_transitivo_indireto;
@@ -484,33 +486,31 @@ void Graph::buscaProfundidadeInvertida(size_t vertice, vector<size_t>& resultado
     }
 }
 
-void Graph::min_path_dijkstra(size_t node_id_1, size_t node_id_2){
+std::string Graph::min_path_dijkstra(size_t node_id_1, size_t node_id_2) {
     float INFINITO = 1e10;
     Node* no_atual = find_node(node_id_1);
     if (!no_atual) {
-        cout << "No de origem nao encontrado." << endl;
-        return; // Se o nó de origem não existir, saímos
+        return "Nó de origem não encontrado.";
     }
 
     Node* no_final = find_node(node_id_2);
     if (!no_final) {
-        cout << "No de destino nao encontrado." << endl;
-        return; // Se o nó de destino não existir, saímos
+        return "Nó de destino não encontrado.";
     }
 
     // Inicialização
-    vector<float> estimativa(_number_of_nodes, INFINITO);
-    vector<int> precedente(_number_of_nodes, -1);
-    vector<bool> visitado(_number_of_nodes, false);
+    std::vector<float> estimativa(_number_of_nodes, INFINITO);
+    std::vector<int> precedente(_number_of_nodes, -1);
+    std::vector<bool> visitado(_number_of_nodes, false);
 
     estimativa[node_id_1] = 0;
 
-    while (true){
+    while (true) {
         // Encontrar o nó com a menor estimativa que não foi visitado
         float menor_distancia = INFINITO;
         size_t u = (size_t) -1;
-        for (size_t i = 0; i < _number_of_nodes; ++i){
-            if (!visitado[i] && estimativa[i] < menor_distancia){
+        for (size_t i = 0; i < _number_of_nodes; ++i) {
+            if (!visitado[i] && estimativa[i] < menor_distancia) {
                 menor_distancia = estimativa[i];
                 u = i;
             }
@@ -520,49 +520,50 @@ void Graph::min_path_dijkstra(size_t node_id_1, size_t node_id_2){
 
         no_atual = find_node(u);
         if (!no_atual) {
-            cout << "Erro ao encontrar o no " << u << "." << endl;
-            return; // Verificação de erro
+            return "Erro ao encontrar o nó " + std::to_string(u) + ".";
         }
 
         visitado[u] = true;
 
         // Processa as arestas do nó atual
-        for (Edge* aresta = no_atual->_first_edge; aresta != nullptr; aresta = aresta->_next_edge){
+        for (Edge* aresta = no_atual->_first_edge; aresta != nullptr; aresta = aresta->_next_edge) {
             size_t v = aresta->_target_id;
             if (v >= _number_of_nodes) {
-                cout << "ID de destino " << v << " esta fora do limite." << endl;
                 continue; // Verificação adicional
             }
 
             float nova_estimativa = estimativa[u] + aresta->_weight;
 
-            if (nova_estimativa < estimativa[v]){
+            if (nova_estimativa < estimativa[v]) {
                 estimativa[v] = nova_estimativa;
                 precedente[v] = u;
             }
         }
     }
 
-    // Imprimir o caminho mínimo
-    vector<size_t> caminho;
-    for (size_t i = node_id_2; i != (size_t)-1; i = precedente[i])
-    {
+    // Construir o caminho mínimo
+    std::vector<size_t> caminho;
+    for (size_t i = node_id_2; i != (size_t)-1; i = precedente[i]) {
         caminho.push_back(i);
         if (i == node_id_1) break;
     }
-    reverse(caminho.begin(), caminho.end()); // Inverte o caminho para exibir corretamente
+    std::reverse(caminho.begin(), caminho.end());
 
-    // Exibe o caminho e a distância total
-    cout << "Caminho minimo: ";
+    // Construir a string de resultado
+    std::stringstream resultado;
     for (size_t i : caminho) {
-        cout << i << " ";
+        resultado << i << " ";
     }
-    cout << "\nDistancia total: " << estimativa[node_id_2] << endl;
+
+    return resultado.str();
 }
 
+
 string Graph::min_path_floyd(size_t node_id_1, size_t node_id_2) {
+     // Contar o número de vértices
     size_t numVertices = this->_number_of_nodes +1;
     float infinity = 1e10;
+    // Inicializar a matriz de distâncias
     vector<vector<float>> L(numVertices, vector<float>(numVertices, infinity));
 
     // Preencher a matriz com os pesos das arestas
@@ -575,24 +576,19 @@ string Graph::min_path_floyd(size_t node_id_1, size_t node_id_2) {
     }
 
     // Algoritmo de Floyd-Warshall
-    for (size_t k = 0; k < numVertices; ++k) {
-        for (size_t i = 0; i < numVertices; ++i) {
-            for (size_t j = 0; j < numVertices; ++j) {
+    for (size_t k = 1; k < numVertices; ++k) {
+        for (size_t i = 1; i < numVertices; ++i) {
+            for (size_t j = 1; j < numVertices; ++j) {
                 if (L[i][k] < infinity && L[k][j] < infinity) {
                     if (L[i][j] > L[i][k] + L[k][j]) {
                         L[i][j] = L[i][k] + L[k][j];
                     }
                 }
-                if (k == i) {
+                if (k==i) {
                     L[k][i] = 0; // Distância de um nó para ele mesmo é 0
                 }
             }
         }
-    }
-
-    // Verificar se há caminho entre node_id_1 e node_id_2
-    if (L[node_id_1][node_id_2] == infinity) {
-        return "Não existe caminho.";
     }
 
     // Criar a string do caminho mínimo
@@ -621,9 +617,7 @@ string Graph::min_path_floyd(size_t node_id_1, size_t node_id_2) {
         }
     }
 
-    cout << "Distância total: " << L[node_id_1][node_id_2] << endl;
-    // Exibe o caminho e a distância total
-    return "Caminho mínimo: " + caminho_minimo;
+    return caminho_minimo;
 }
 
 size_t Graph::encontrar_pai(size_t v, vector<size_t>& pai) {
@@ -834,6 +828,104 @@ vector<size_t> Graph::get_fechoTransitivoDireto(size_t vertice_inicio)
     // Retorna o vetor contendo o fecho transitivo direto do vértice inicial
     return fechoTransitivoDireto;
 }
+
+std::string Graph::caracteristicas() {
+    size_t numVertices = this->_number_of_nodes;
+    float infinity = 1e10;
+
+    // Inicializar a matriz de distâncias
+    float L[numVertices][numVertices];
+    for (size_t i = 0; i < numVertices; ++i) {
+        for (size_t j = 0; j < numVertices; ++j) {
+            L[i][j] = (i == j) ? 0 : infinity; // Inicializa com 0 na diagonal e infinito nos demais
+        }
+    }
+
+    // Preencher a matriz com os pesos das arestas
+    for (Node* node = _first; node != nullptr; node = node->_next_node) {
+        size_t u = node->_id;
+        for (Edge* edge = node->_first_edge; edge != nullptr; edge = edge->_next_edge) {
+            size_t v = edge->_target_id;
+            L[u][v] = edge->_weight;
+            if (!this->_directed) {
+                L[v][u] = edge->_weight;  // Para grafos não direcionados
+            }
+        }
+    }
+
+    // Algoritmo de Floyd-Warshall para calcular o menor caminho entre todos os pares de vértices
+    for (size_t k = 0; k < numVertices; ++k) {
+        for (size_t i = 0; i < numVertices; ++i) {
+            for (size_t j = 0; j < numVertices; ++j) {
+                if (L[i][k] < infinity && L[k][j] < infinity) {
+                    if (L[i][j] > L[i][k] + L[k][j]) {
+                        L[i][j] = L[i][k] + L[k][j];
+                    }
+                }
+            }
+        }
+    }
+
+    // Variáveis para armazenar o raio, diâmetro, centro e periferia
+    float raio = infinity;
+    float diametro = 0;
+    size_t centro[numVertices], periferia[numVertices]; // Vetores para armazenar o centro e periferia
+    int countCentro = 0, countPeriferia = 0;
+
+    for (size_t i = 0; i < numVertices; ++i) {
+        float max_dist = 0;
+        for (size_t j = 0; j < numVertices; ++j) {
+            if (L[i][j] < infinity && L[i][j] > max_dist) {
+                max_dist = L[i][j];
+            }
+        }
+
+        if (max_dist < raio) {
+            raio = max_dist;  // O menor dos maiores valores de distância
+        }
+        if (max_dist > diametro) {
+            diametro = max_dist;  // O maior dos maiores valores de distância
+        }
+    }
+
+    // Encontrar os vértices que compõem o centro e a periferia
+    for (size_t i = 0; i < numVertices; ++i) {
+        float max_dist = 0;
+        for (size_t j = 0; j < numVertices; ++j) {
+            if (L[i][j] < infinity && L[i][j] > max_dist) {
+                max_dist = L[i][j];
+            }
+        }
+
+        if (max_dist == raio) {
+            centro[countCentro++] = i; // Adiciona ao centro
+        }
+        if (max_dist == diametro) {
+            periferia[countPeriferia++] = i; // Adiciona à periferia
+        }
+    }
+
+    // Usar std::ostringstream para construir a string de saída
+    std::ostringstream output;
+    output << "Raio do grafo: " << raio << "\n";
+    output << "Diâmetro do grafo: " << diametro << "\n";
+
+    output << "Centro do grafo: ";
+    for (int i = 0; i < countCentro; ++i) {
+        output << centro[i] << " ";
+    }
+    output << "\n";
+
+    output << "Periferia do grafo: ";
+    for (int i = 0; i < countPeriferia; ++i) {
+        output << periferia[i] << " ";
+    }
+    output << "\n";
+
+    // Retornar a string gerada
+    return output.str();
+}
+
 
 size_t Graph::getNum_vertices() {
         return _number_of_nodes;
