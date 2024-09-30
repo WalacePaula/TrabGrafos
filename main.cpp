@@ -34,7 +34,10 @@ void print_menu() {
     cout << "7. Caminhamento em profundidade\n";
     cout << "8. Raio, diametro, centro e periferia do grafo\n";
     cout << "9. Conjunto de vertices de articulacao\n";
-    cout << "10. Sair\n";
+    cout << "10. Algoritmo Guloso\n";
+    cout << "11. Algoritmo Guloso Randomizado\n";
+    cout << "12. Algoritmo Guloso Randomizado Reativo\n";
+    cout << "0. Sair\n";
     cout << "Escolha uma opcao: ";
 
 }
@@ -54,6 +57,20 @@ int main(int argc, char* argv[]) {
 
         Graph* graph = new Graph(instance_file, directed, weighted_edges, weighted_nodes);
         instance_file.close();
+
+        ///////////////////////////////////////////////////////////////////////////////////
+        /*
+        vector<vector<int>> subgraphs = graph->algoritmoGulosoMGGPP();
+
+        float total_gap = graph->calculaTotalGap(subgraphs);
+        graph->print_graph();
+        for (size_t i = 0; i < subgraphs.size(); ++i) {
+            cout << "Subgrafo " << i + 1 << ": ";
+            graph->printSubgraph(subgraphs[i]); 
+        }
+        */
+
+        ///////////////////////////////////////////////////////////////////////////////////
 
         int option;
         stringstream output;
@@ -110,22 +127,22 @@ int main(int argc, char* argv[]) {
                     break;
                 }
                 case 5: {
-                    std::vector<size_t> vertices;
+                    vector<size_t> vertices;
                     size_t num_vertices;
 
-                    std::cout << "Digite o número de vertices do subconjunto X: ";
-                    std::cin >> num_vertices;
+                    cout << "Digite o número de vertices do subconjunto X: ";
+                    cin >> num_vertices;
 
-                    std::cout << "Digite os IDs dos vertices do subconjunto X: ";
+                    cout << "Digite os IDs dos vertices do subconjunto X: ";
                     for(size_t i = 0; i < num_vertices; ++i) {
                         size_t vertex;
-                        std::cin >> vertex;
+                        cin >> vertex;
                         vertices.push_back(vertex);
                     }
 
                     Graph* arvGeradoraMin = graph->arvoreGeradoraMinPrim(vertices);
 
-                    std::string arvore_string = graph->print_arvoreGeradoraMinima(arvGeradoraMin);
+                    string arvore_string = graph->print_arvoreGeradoraMinima(arvGeradoraMin);
                     output << arvore_string;
 
                     cout << arvore_string;
@@ -135,22 +152,22 @@ int main(int argc, char* argv[]) {
                 }
 
                 case 6: {
-                    std::vector<size_t> vertices;
+                    vector<size_t> vertices;
                     size_t num_vertices;
 
-                    std::cout << "Digite o numero de vertices do subconjunto X: ";
-                    std::cin >> num_vertices;
+                    cout << "Digite o numero de vertices do subconjunto X: ";
+                    cin >> num_vertices;
 
-                    std::cout << "Digite os IDs dos vertices do subconjunto X: ";
+                    cout << "Digite os IDs dos vertices do subconjunto X: ";
                     for(size_t i = 0; i < num_vertices; ++i) {
                         size_t vertex;
-                        std::cin >> vertex;
+                        cin >> vertex;
                         vertices.push_back(vertex);
                     }
 
                     Graph* arvGeradoraMin = graph->arvoreGeradoraMinKruskal(vertices);
 
-                    std::string arvore_string = graph->print_arvoreGeradoraMinima(arvGeradoraMin);
+                    string arvore_string = graph->print_arvoreGeradoraMinima(arvGeradoraMin);
                     output << arvore_string;
 
                     cout << output.str();
@@ -161,11 +178,11 @@ int main(int argc, char* argv[]) {
 
                 case 7: {
                     size_t vertice;
-                    std::vector<size_t> resultado;
-                    std::vector<bool> visitado(graph->getNum_vertices(), false);
+                    vector<size_t> resultado;
+                    vector<bool> visitado(graph->getNum_vertices(), false);
 
-                    std::cout << "Digite o ID do vertice de inicio: ";
-                    std::cin >> vertice;
+                    cout << "Digite o ID do vertice de inicio: ";
+                    cin >> vertice;
 
                     graph->buscaProfundidade(vertice, resultado, visitado);
 
@@ -187,17 +204,67 @@ int main(int argc, char* argv[]) {
                 }
 
                 case 9: {
-                    /*std::vector<size_t> vertices_articulacao = graph->get_verticesArticulacao();
+                    /*vector<size_t> vertices_articulacao = graph->get_verticesArticulacao();
 
-                    std::cout << "Conjunto de vértices de articulação:\n";
+                    cout << "Conjunto de vértices de articulação:\n";
                     for(size_t v : vertices_articulacao) {
-                        std::cout << v << " ";
+                        cout << v << " ";
                     }
-                    std::cout << std::endl;*/
+                    cout << endl;*/
                     break;
                 }
 
-                case 10:
+                case 10: {
+                    graph->print_graph();
+                    graph->Guloso();
+                    float gapTotal = graph->calcularGapTotal();
+                    cout << "Gap Total: " << gapTotal << endl;
+                    break;
+                }
+
+                case 11: {
+                    graph->GulosoRandomizado(0.5,42);
+                    float gapTotal = graph->calcularGapTotal();
+                    cout << "Gap Total: " << gapTotal << endl;
+                    break;
+                    /*
+                    cout << "\n\nALFA: 0.1" << endl;
+                    for (int i = 0; i < 10; i++){
+                        graph->GulosoRandomizado(0.1, i);
+                    }
+                    cout << "\n\nALFA: 0.2" << endl;
+                    for (int i = 0; i < 10; i++){
+                        graph->GulosoRandomizado(0.2, i);
+                    }
+                    cout << "\n\nALFA: 0.3" << endl;
+                    for (int i = 0; i < 10; i++){
+                        graph->GulosoRandomizado(0.3, i);
+                    }
+                    cout << "\n\nALFA: 0.5" << endl;
+                    for (int i = 0; i < 10; i++){
+                        graph->GulosoRandomizado(0.5, i);
+                    }
+                    cout << "\n\nALFA: 0.7" << endl;
+                    for (int i = 0; i < 10; i++){
+                        graph->GulosoRandomizado(0.7, i);
+                    }
+                    */
+                    break;
+                }
+
+                case 12: {
+                    // Parâmetros
+                    int maxIterations = 500;  // Número de iterações para a abordagem reativa
+                    vector<float> alphas = {0.05, 0.1, 0.15, 0.3, 0.5, 0.7, 0.9};  // Lista de valores de alpha
+                    int seed = 123;  // Defina uma semente para garantir a reprodutibilidade
+
+                    graph->GulosoRandomizadoReativo(maxIterations,alphas, seed);
+                    float gapTotal = graph->calcularGapTotal();
+                    cout << "Gap Total: " << gapTotal << endl;
+                    break;
+                }
+
+                case 0:
                     output << "Saindo do programa...\n";
                     cout << output.str(); // Exibe a saída
                     break;
@@ -207,7 +274,7 @@ int main(int argc, char* argv[]) {
                     break;
             }
 
-            if (option >= 1 && option <= 9) { // Opcões válidas para salvar o resultado
+            if (option >= 1 && option <= 12) { // Opcões válidas para salvar o resultado
                 char save_choice;
                 cout << "Deseja salvar a saida no arquivo (S/N)? ";
                 cin >> save_choice;
@@ -219,7 +286,7 @@ int main(int argc, char* argv[]) {
             output.str(""); // Limpa o conteúdo do output
             output.clear();  // Limpa as flags de erro do stringstream
 
-        } while (option != 10);
+        } while (option != 0);
 
         delete graph;
 

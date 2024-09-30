@@ -1,0 +1,79 @@
+// VERIFICAR NOS REPETIDOS
+int Graph::GulosoMelhorado(){
+    vector<Node*> nodes = GetNodesSortedByDegree(); // Ordena os nós pelo grau
+    subgrafos = vector<vector<size_t>>(_p);  // Inicializa os subgrafos
+    vector<float> minPesos(_p, numeric_limits<float>::max());
+    vector<float> maxPesos(_p, numeric_limits<float>::min());
+
+    // Passo 1: Alocar os primeiros nós em cada subgrafo
+    for (int i = 0; i < _p && i < nodes.size(); ++i) {
+        Node* node = nodes[i];
+        subgrafos[i].push_back(node->_id);
+        minPesos[i] = node->_weight;
+        maxPesos[i] = node->_weight;
+    }
+
+    int contemplados = _p;  // Contabiliza os nós alocados
+
+    // Passo 2: Alocação dos próximos nós
+    while (contemplados < _number_of_nodes) {
+        for (int i = 0; i < _p; ++i) {
+            if (subgrafos[i].size() < (_number_of_nodes / _p) + 1) { // Verifica se ainda pode adicionar nós
+                // Seleciona um nó que minimize o gap
+                Node* melhorNo = nullptr;
+                float menorGap = numeric_limits<float>::max();
+
+                // Considera vizinhos dos nós já alocados
+                for (size_t id : subgrafos[i]) {
+                    Node* currentNode = find_node(id);
+                    for (Edge* edge = currentNode->_first_edge; edge != nullptr; edge = edge->_next_edge) {
+                        Node* neighborNode = find_node(edge->_target_id);
+                        if (neighborNode != nullptr && 
+                            find(subgrafos[i].begin(), subgrafos[i].end(), neighborNode->_id) == subgrafos[i].end()) {
+                            // Calcula novo gap
+                            float novoMinPeso = min(minPesos[i], neighborNode->_weight);
+                            float novoMaxPeso = max(maxPesos[i], neighborNode->_weight);
+                            float novoGap = novoMaxPeso - novoMinPeso;
+
+                            // Atualiza se for o melhor nó
+                            if (novoGap < menorGap) {
+                                menorGap = novoGap;
+                                melhorNo = neighborNode;
+                            }
+                        }
+                    }
+                }
+
+                // Adiciona o nó escolhido ao subgrafo
+                if (melhorNo != nullptr) {
+                    subgrafos[i].push_back(melhorNo->_id);
+                    minPesos[i] = min(minPesos[i], melhorNo->_weight);
+                    maxPesos[i] = max(maxPesos[i], melhorNo->_weight);
+
+                    // Verifica conectividade
+                    if (ehConexo(subgrafos[i])) {
+                        contemplados++;
+                    } else {
+                        subgrafos[i].pop_back(); // Remove se não é conexo
+                    }
+                }
+            }
+        }
+    }
+
+    // Exibir a solução final
+    cout << "Subgrafos resultantes: " << endl;
+    for (int i = 0; i < _p; ++i) {
+        cout << "Subgrafo " << i << ": [";
+        for (size_t m = 0; m < subgrafos[i].size(); ++m) {
+            cout << subgrafos[i][m];
+            if (m != subgrafos[i].size() - 1) {
+                cout << ',';
+            }
+        }
+        cout << ']' << endl;
+    }
+
+    return 0;
+
+}
